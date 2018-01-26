@@ -14,6 +14,8 @@ def strategy():
     trend = body['trend']
 
     # Strategy logic.
+
+    # Bullish signal.
     if macddiff > settings['thresholds']['up']:
 
         # New trend detected.
@@ -27,6 +29,7 @@ def strategy():
 
         trend['duration'] += 1
 
+        # Analyzing data in order to send signals.
         if trend['duration'] >= settings['thresholds']['persistence']:
             trend['persisted'] = True
 
@@ -34,6 +37,7 @@ def strategy():
             trend['adviced'] = True
             advice['long'] = True
 
+    # Bearish signal.
     elif macddiff < settings['thresholds']['down']:
 
         # New trend detected.
@@ -47,6 +51,7 @@ def strategy():
 
         trend['duration'] += 1
 
+        # Analyzing data in order to send signals.
         if trend['duration'] >= settings['thresholds']['persistence']:
             trend['persisted'] = True
 

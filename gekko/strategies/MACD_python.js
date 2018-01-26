@@ -48,6 +48,7 @@ method.log = function() {
 method.check = function() {
   var macddiff = this.indicators.macd.result;
 
+  // Posting the required data so the Flask app can anlyze it.
   request.post('http://127.0.0.1:5000/macd', 
                {body: {
                   settings: this.settings,
