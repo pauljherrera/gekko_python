@@ -1,0 +1,26 @@
+version: '3'
+services:
+  gekko:
+    restart: always
+    build: gekko/
+    volumes:
+      - gekko/volumes/gekko/history:/usr/src/app/history
+      - gekko/config.js:/usr/src/app/config.js
+    links:
+      - redis
+    environment:
+     - HOST
+     - PORT
+    ports: 
+      - 5000:5000
+
+
+  redis:
+    image: redis:latest
+    volumes:
+      - ./volumes/redis:/data
+
+  python_gekko:
+    restart: always
+    build: python_gekko/
+
