@@ -2,10 +2,7 @@ version: '3'
 services:
   gekko:
     restart: always
-    build: gekko/
-    volumes:
-      - gekko/volumes/gekko/history:/usr/src/app/history
-      - gekko/config.js:/usr/src/app/config.js
+    build: ./gekko
     links:
       - redis
     environment:
@@ -17,10 +14,9 @@ services:
 
   redis:
     image: redis:latest
-    volumes:
-      - ./volumes/redis:/data
+
 
   python_gekko:
     restart: always
-    build: python_gekko/
+    build: ./python_gekko
 
