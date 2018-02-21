@@ -28,9 +28,10 @@ def strategy():
 
     # Getting request data.
     body = request.get_json()
-    print(body)
+    # print(body)
     counter = int(body['counter'])
     settings = body['settings']
+    print(settings)
     candle = body['candle']
     advice = {'long': False,
               'short': False}
@@ -41,6 +42,7 @@ def strategy():
 
     # Storing new price.
     time = parser.parse(candle['start'])
+    id = candle['id']
     new_price = pd.DataFrame({'open': candle['open'], 
                               'high': candle['high'],
                               'low': candle['low'],
@@ -49,10 +51,14 @@ def strategy():
                               'volume': candle['volume'],
                               'trades': candle['trades'],
                               }, 
-                             index = [time])
+                             index = [id])
     prices = prices.append(new_price)
 
     # Strategy logic.
+    MovinAverage = prices['close'].rolling(10).mean()
+    MovinAverage20 = prices['close'].rolling(20).mean()
+    # print(MovinAverage)
+    # print(MovinAverage20)
 
     # Bullish signal.
 
@@ -60,7 +66,8 @@ def strategy():
     # Updating response body.
     body['trend'] = ''
     body['advice'] = ''
-    print(body)
+    # print(prices)
+    # print('prueba')
  
     return jsonify(body)
 

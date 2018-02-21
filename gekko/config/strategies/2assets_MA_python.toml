@@ -1,8 +1,11 @@
-short = 10
-long = 21
-signal = 9
 
-[thresholds]
-down = -0.025
-up = 0.025
-persistence = 1
+# percentage
+percentage = 5
+# num of long periods
+longperiod = 20
+# num of short periods
+shortperiod = 10
+# long, short, nothing 
+signal = 'long'
+# indicate type of trades
+type = 'btc'

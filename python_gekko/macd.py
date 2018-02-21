@@ -4,14 +4,14 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-@app.route('/macd', methods=['POST']) 
+@app.route('/macd', methods=['GET', 'POST']) 
 def strategy(): 
     advice = {'long': False,
               'short': False}
 
     # Getting request data.
     body = request.get_json()
-    counter = int(body['counter'])
+    # counter = int(body['counter'])
     macddiff = body['macddiff']
     settings = body['settings']
     trend = body['trend']

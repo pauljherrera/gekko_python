@@ -24,7 +24,7 @@ method.init = function() {
     direction: 'none',
     duration: 0,
     persisted: false,
-    adviced: false
+    adviced: true
   };
 
   // how many candles do we need as a base
