@@ -98,8 +98,13 @@ def strategy():
             pass
     else:
         estrategia_scv = pd.read_csv('./static/MAdif.csv')
+        fstrategy = parser.parse(estrategia_scv.iloc[0]['fecha'])
+        tprices = parser.parse(prices.iloc[-1]['datetime'])
         print(estrategia_scv)
-        print(estrategia_scv.columns)
+        print(fstrategy)
+        print(tprices)
+        if fstrategy == tprices:
+            print('compra')
 
 
     # Bullish signal.
@@ -110,6 +115,8 @@ def strategy():
     body['advice'] = ''
     # print(prices)
     # print(len(prices))
+    #print(fstrategy)
+    #print(tprices)
  
     return jsonify(body)
 
