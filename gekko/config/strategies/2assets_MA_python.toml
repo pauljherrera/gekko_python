@@ -2,10 +2,12 @@
 # percentage
 percentage = 5
 # num of long periods
-longperiod = 20
+longperiod = 10
 # num of short periods
-shortperiod = 10
+shortperiod = 5
 # long, short, nothing 
 signal = 'long'
 # indicate type of trades
 type = 'btc'
+# override <yes> or <no>
+override = 'yes'
