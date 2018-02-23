@@ -23,8 +23,17 @@ def reset_settings():
     in_market = False
 
 
-@app.route('/macd', methods=['POST']) 
-def strategy(): 
+@app.route('/macd', methods=['POST'])
+def strategy():
+    """
+    Estrategia para indicar si comprar o vender en una determinada moneda
+    con respecto al un MA de BTC.
+
+    :param settings: configuracion para los calculos
+    :param counter: evita la repeticion de data en el DaaFrame
+    :param candle: velas del activo a procesar
+    :param advice: indica comprar(long) o vender(short)
+    """
     global prices, bars, in_market
 
     # Getting request data.
@@ -39,7 +48,6 @@ def strategy():
     # Reseting when it's a new backtest.
     if counter == 1:
         reset_settings()
-
     # Storing new price.
     time = parser.parse(candle['start'])
     # id = candle['id']
@@ -70,7 +78,7 @@ def strategy():
             # ultima fecha
             fecha = prices.iloc[-1]['datetime']
             time1 = parser.parse(fecha)  # fecha parseada
-
+            # determina si es compra o venta
             if float(MAdif) > settings['percentage']:
                 a = 'long'
             else:
@@ -89,22 +97,38 @@ def strategy():
             # print('MAshort: \n', MAshort)
             print('último MAshort: ', MAshort[indice])
             print('MAdif: ', MAdif)
-            print(a)
-            print(time1)
-            print(fecha)
-            print(nestrategia)
-            print(estrategia)
+            print('guardado en .csv: ', estrategia)
         else:  # if override != 'yes'
             pass
     else:
+        # la estrategia con una moneda distinta al btc
         estrategia_scv = pd.read_csv('./static/MAdif.csv')
-        fstrategy = parser.parse(estrategia_scv.iloc[0]['fecha'])
-        tprices = parser.parse(prices.iloc[-1]['datetime'])
+        fstrategy = parser.parse(estrategia_scv.iloc[0]['fecha'])  # fecha del MAdif
+        tprices = parser.parse(prices.iloc[-1]['datetime'])  # fecha de la vela
         print(estrategia_scv)
-        print(fstrategy)
-        print(tprices)
+        # si existe una compra o venta de otra moneda igual a la estrategia
         if fstrategy == tprices:
-            print('compra')
+            lista = []
+            #for key, value in candle.iteritems():
+            #    temp = [key, value]
+            #    lista.append(temp)
+            # madif, hora, tend, criptomoneda, candle
+            advice = estrategia_scv.iloc[0]['tend']
+            datastrategy = pd.DataFrame({
+                                        'hora': [fstrategy],
+                                        'tend': [advice],
+                                        'type': [settings['type']],
+                                        'candle': [lista] })
+            print(datastrategy)
+            # MAdifStrategy = new_price.to_csv('./static/MAdifStrategy.csv')
+            # estrategias = pd.read_csv('./static/MAdif.csv')
+            print("fecha del MAdif: ", fstrategy)
+            print("fecha coincidente: ", tprices)
+            print(advice)
+
+        else:
+            # out['canlde'] = new_price
+            advice = 'nothing'
 
 
     # Bullish signal.
@@ -112,7 +136,7 @@ def strategy():
 
     # Updating response body.
     body['trend'] = ''
-    body['advice'] = ''
+    body['advice'] = advice
     # print(prices)
     # print(len(prices))
     #print(fstrategy)
