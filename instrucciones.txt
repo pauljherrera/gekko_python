@@ -1,0 +1,37 @@
+para levantar el server de gekko:
+    node gekko --ui
+para correr la api de flask:
+    python/python3 2assets_MA.py
+
+CONFIGURACION DEL SETTINGS DE GEKKO PARA 2ASSETS_MA_PYTHON
+instruccions:
+    - la primera corrida del backtest el type debe ser btc
+    - la segunda corrida del backtest se debe especificar la monde en type, ejemplo: type='eth'
+    - esto buscara las velas y fechas coincidentes y arrojara un advice de short, long o nada de acuerdo a la estrategia, porcentaje y periodos en el settings
+    - el MAdif se guarda en un archivo .scv llamado MAdif.scv dentro de la carpeta static de la aplicacion flask
+    - el advice, junto con la vela, la fecha-hora y el tipo moneda(type) es almacenado en un archivo csv  llamado advice.csv en la carpeta static
+    ATENCION: esto se hiso para mantener esos datos y poder mirarlos en cualquier momento, de igual manera cada vez que se corren los backtets estos archivos son reescritos.
+#################
+# percentage ####
+#################
+percentage = 0.12  -> porcentaje para hacer el calculo de acuerdo a los periodos
+######################
+# num of long periods#
+######################
+longperiod = 10  -> numero de periodos largos a tomar
+#######################
+# num of short periods#
+#######################
+shortperiod = 5  -> numero de periodos cortos a tomar
+#################################
+# signar [long, short, nothing]##
+################################# 
+signal = 'long'  -> esto verifica que señal quieres que arroje(se podria crear una funcionalidad que busque si hay un consejo de compra almacenado y la tendencia es comprar que compre o si es de venta que venda, o un nothing donde simplemente haga la corrida y de acuerdo a lo almacenado y si hay fechas coincidentes indique si comprar o vender) actualmente este valor no esta en uso, por defecto la api arroja el consejo de long o short y el tipo de moneda junto con la vela coincidente
+##########################
+# indicate type of trades#
+##########################
+type = 'eth'  -> la primera corrida debe especificarse que es en btc, luego el segundo backtest se le indica el otro tipo de moneda para que asi pueda realizar la estrategia correspondiente al segundo backtest
+#########################
+# override <yes> or <no>#
+#########################
+override = 'yes'  -> para sobreescribir el MAdif almacenado, si la respuesta es <no> usará el último MAdif alamcenado en el archivo MAdif.csv
