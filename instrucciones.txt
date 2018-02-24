@@ -35,3 +35,7 @@ type = 'eth'  -> la primera corrida debe especificarse que es en btc, luego el s
 # override <yes> or <no>#
 #########################
 override = 'yes'  -> para sobreescribir el MAdif almacenado, si la respuesta es <no> usará el último MAdif alamcenado en el archivo MAdif.csv
+
+la prueba fue realizada con datos de binance de fecha 2018-02-10 a 2018-02-11
+binance	USDT	BTC	2018-02-10 12:00	2018-02-11 11:58	23 hours, 58 minutes
+binance	USDT	ETH	2018-02-10 12:00	2018-02-11 11:58	23 hours, 58 minutes
