@@ -28,7 +28,6 @@ def strategy():
     """
     Estrategia para indicar si comprar o vender en una determinada moneda
     con respecto al un MA de BTC.
-
     :param settings: configuracion para los calculos
     :param counter: evita la repeticion de data en el DaaFrame
     :param candle: velas del activo a procesar
@@ -134,8 +133,9 @@ def strategy():
             #return jsonify(body)
 
         else:
+            pass
             # advice = 'nothing'
-            return jsonify(body)
+            # return jsonify(body)
 
 
     # Bullish signal.
@@ -143,13 +143,13 @@ def strategy():
 
     # Updating response body.
     #body['trend'] = ''
-    #body['advice'] = advice
+    body['advice'] = advice
     # print(prices)
     # print(len(prices))
     #print(fstrategy)
     #print(tprices)
  
-    #return jsonify(body)
+    return jsonify(body)
 
 if __name__ == '__main__': 
     app.run() 
