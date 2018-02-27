@@ -57,7 +57,7 @@ method.check = function(candle) {
 
                   // Trading advice.
                   if(body === undefined){
-                    console.log('no register for this request')
+                    console.log(error)
                   }else{
                     if (body.advice == 'long') {
                       this.advice('long');

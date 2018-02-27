@@ -66,7 +66,7 @@ def strategy():
     # Strategy logic.
     if settings['type'] == 'btc':
         if settings['override']  == 'yes':
-            # calculo para el MAdif
+            # calculate for the MAdif
             malong = settings['longperiod']
             MAlong = prices['close'].rolling(malong).mean()
             lenght = len(MAlong) - 1
@@ -84,38 +84,38 @@ def strategy():
             else:
                 a = 'long'
             # for the strategy
-            # nestrategia = {'date': date, 'tend': a, 'MAdif': MAdif, 'date': time1}
+            # nstrategy = {'date': date, 'tend': a, 'MAdif': MAdif, 'date': time1}
             # must be saved in a file advice.scv lenght, date, MAdif and a(advice)
-            estrategia = pd.DataFrame({'date': [date],
+            strategy = pd.DataFrame({'date': [date],
                                         'tend':[a],
                                         'MAdif':[MAdif]
                                         },columns=['date', 'tend', 'MAdif'],
                                         index=[time1])
-            estrategia.to_csv('./static/MAdif.csv')
+            strategy.to_csv('./static/MAdif.csv')
             # print('Malong: \n', MAlong)
             print('last MAlong: ', MAlong[lenght])
             # print('MAshort: \n', MAshort)
             print('last MAshort: ', MAshort[lenght])
             print('MAdif: ', MAdif)
-            print('saved in MAdif.csv: ', estrategia)
+            print('saved in MAdif.csv: ', strategy)
         else:  # if override != 'yes'
             pass
         # return jsonify(body)
     else:
-        # la estrategia con una moneda distinta al btc
-        estrategia_scv = pd.read_csv('./static/MAdif.csv')
-        fstrategy = parser.parse(estrategia_scv.iloc[0]['date'])  # date del MAdif
+        # the strategy with a currency other than btc
+        strategy_scv = pd.read_csv('./static/MAdif.csv')
+        fstrategy = parser.parse(strategy_scv.iloc[0]['date'])  # date del MAdif
         tprices = parser.parse(prices.iloc[-1]['datetime'])  # date of candle
-        print(estrategia_scv)
+        print(strategy_scv)
         # if there is a purchase or sale of another currency equal to the strategy
         if fstrategy == tprices:
             lista = []
             for key, value in candle.items():
                 temp = [key, value]
                 lista.append(temp)
-            # el advice that return with candle for the gekko console
-            advice = estrategia_scv.iloc[0]['tend']  # short/long
-            # datastrategy: madif, hora, tend, criptomoneda, candle
+            # the advice that return with candle for the gekko console
+            advice = strategy_scv.iloc[0]['tend']  # short/long
+            # datastrategy: madif, hour, tend, criptomoneda, candle
             datastrategy = pd.DataFrame({
                                         'hora': [fstrategy],
                                         'tend': [advice],
@@ -124,7 +124,7 @@ def strategy():
             datastrategy.to_csv('./static/advice.csv')
             read_datastrategy = pd.read_csv('./static/advice.csv')
             json_datastrategy= read_datastrategy.to_json(orient='index')
-            print("date del MAdif: ", fstrategy)
+            print("date of MAdif: ", fstrategy)
             print("date coincidente: ", tprices)
             print(advice)
             print(json_datastrategy)
@@ -141,7 +141,7 @@ def strategy():
 
 
     # Updating response body.
-    #body['trend'] = ''
+    body['trend'] = ''
     body['advice'] = advice
     # print(prices)
     # print(len(prices))
