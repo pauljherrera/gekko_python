@@ -117,7 +117,7 @@ def strategy():
             advice = strategy_scv.iloc[0]['tend']  # short/long
             # datastrategy: madif, hour, tend, criptomoneda, candle
             datastrategy = pd.DataFrame({
-                                        'hora': [fstrategy],
+                                        'hour': [fstrategy],
                                         'tend': [advice],
                                         'type': [settings['type']],
                                         'candle': [lista] })
@@ -125,7 +125,7 @@ def strategy():
             read_datastrategy = pd.read_csv('./static/advice.csv')
             json_datastrategy= read_datastrategy.to_json(orient='index')
             print("date of MAdif: ", fstrategy)
-            print("date coincidente: ", tprices)
+            print("date coincident: ", tprices)
             print(advice)
             print(json_datastrategy)
             # test that shows a body of a strategy dataframe
