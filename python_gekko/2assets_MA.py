@@ -128,11 +128,14 @@ def strategy():
                 else:
                     pass
             else:
-                datastrategy = pd.DataFrame({
-                                            'tend': [advice],
-                                            'type': [settings['trades']]
-                                                }, index=[tprices])
-                datastrategy.to_csv('./static/advice.csv', mode='a+')
+                if advice == 'short':
+                    pass
+                else:
+                    datastrategy = pd.DataFrame({
+                                                    'tend': [advice],
+                                                    'type': [settings['trades']]
+                                                    }, index=[tprices])
+                    datastrategy.to_csv('./static/advice.csv', mode='a+')
 
             print("date coincident: ", tprices)
             print(advice)
