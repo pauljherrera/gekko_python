@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from dateutil import parser
 import pandas as pd
 import math
+import os
 
 
 
@@ -82,6 +83,7 @@ def strategy():
         entry_percentage = settings['entry_percentage']
         exit_percentage = settings['exit_percentage']
         if math.isnan(MAdif):
+            a = 'nothing'
             pass
         else:
             if MAdif > entry_percentage and MAdif < exit_percentage:
@@ -91,11 +93,12 @@ def strategy():
             elif MAdif >= exit_percentage:
                 a = 'short'
         if a != 'nothing':
-            strategy = pd.DataFrame({'date': [date],
+            strategy = pd.DataFrame({'date': [time1],
                                         'tend':[a],
-                                        'MAdif':[MAdif]
-                                        },columns=['date', 'tend', 'MAdif'],
-                                        index=[time1])
+                                        'MAdif':[MAdif],
+                                        'trade': [settings['trades']],
+                                        },columns=['date', 'tend', 'MAdif', 'trade'],
+                                        index=[date])
             strategy.to_csv('./static/MAdif.csv', mode='a+')
             # print('Malong: \n', MAlong)
             print('last MAlong: ', MAlong[lenght])
@@ -106,49 +109,43 @@ def strategy():
     else:
         # the strategy with a currency other than btc
         strategy_scv = pd.read_csv('./static/MAdif.csv')
-        fstrategy = parser.parse(strategy_scv.iloc[0]['date'])  # MAdif date
-        tprices = parser.parse(prices.iloc[-1]['datetime'])  # date of candle
-        print(strategy_scv)
+        fstrategy = set(strategy_scv.loc[:,'date'])  # MAdif date
+        tprices = str(parser.parse(prices.iloc[-1]['datetime']))  # date of candle
         # if there is a purchase or sale of another currency equal to the strategy
-        if fstrategy == tprices:
-            lista = []
-            for key, value in candle.items():
-                temp = [key, value]
-                lista.append(temp)
+        if tprices in fstrategy:
             # the advice that return with candle for the gekko console
-            advice = strategy_scv.iloc[0]['tend']  # short/long
-            # datastrategy: madif, hour, tend, criptomoneda, candle
-            datastrategy = pd.DataFrame({
-                                        'hour': [fstrategy],
-                                        'tend': [advice],
-                                        'type': [settings['trades']],
-                                        'candle': [lista] })
-            datastrategy.to_csv('./static/advice.csv')
-            read_datastrategy = pd.read_csv('./static/advice.csv')
-            json_datastrategy= read_datastrategy.to_json(orient='index')
-            print("date of MAdif: ", fstrategy)
+            col = strategy_scv[strategy_scv['date'] == tprices]
+            advice = col.iloc[0]['tend']  # short/long
+            # datastrategy: hour, tend, type
+            if os.path.exists('static/advice.csv') and os.stat('./static/advice.csv').st_size > 0:
+                datastrategy = pd.read_csv('./static/advice.csv')
+                if datastrategy.iloc[-1]['tend'] != advice:
+                    datastrategy = pd.DataFrame({
+                                                'tend': [advice],
+                                                'type': [settings['trades']]
+                                                }, index=[tprices])
+                    datastrategy.to_csv('./static/advice.csv', mode='a+')
+                else:
+                    pass
+            else:
+                datastrategy = pd.DataFrame({
+                                            'tend': [advice],
+                                            'type': [settings['trades']]
+                                                }, index=[tprices])
+                datastrategy.to_csv('./static/advice.csv', mode='a+')
+
             print("date coincident: ", tprices)
             print(advice)
-            print(json_datastrategy)
-            # test that shows a body of a strategy dataframe
-            #body = json_datastrategy
-            #return jsonify(body)
-
         else:
             pass
-            # return jsonify(body)
 
 
     # Bullish signal.
 
 
     # Updating response body.
-    body['trend'] = ''
+    # body['trend'] = ''
     body['advice'] = advice
-    # print(prices)
-    # print(len(prices))
-    #print(fstrategy)
-    #print(tprices)
  
     return jsonify(body)
 
