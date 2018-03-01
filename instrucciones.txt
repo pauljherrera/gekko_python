@@ -1,3 +1,50 @@
+to raise the gekko server:
+    node gekko --ui
+to run the flask api:
+    python / python3 2assets_MA.py
+
+CONFIGURATION OF GEKKO SETTINGS FOR 2ASSETS_MA_PYTHON
+Instruction:
+    - the first run of the backtest type must be btc
+    - the second run of the backtest must be specified the monde in type, example: type = 'eth'
+    - this will look for the candles and matching dates and will show a short, long or nothing advice according to the strategy, percentage and periods in the settings
+    - the MAdif is saved in a .scv file called MAdif.scv inside the static folder of the flask application
+    - the advice, along with the candle, the date-time and the currency type (type) is stored in a csv file called advice.csv in the static folder
+    ATTENTION: this was done to keep those data and be able to watch them at any time, in the same way each time the backtets are run, these files are rewritten.
+#################
+# percentage ####
+#################
+percentage = 0.12 -> percentage to do the calculation according to the periods
+##################
+# num of long periods #
+##################
+longperiod = 10 -> number of long periods to take
+###################
+# num of short periods #
+###################
+shortperiod = 5 -> number of short periods to take
+########################################################
+# signar [long, short, nothing] ##
+########################################################
+signal = 'long' -> this verifies what signal you want to throw (you could create a functionality that looks for a purchase advice stored and the tendency is to buy it or sell it, or a nothing where simply do the run and according to the stored and if there are matching dates indicate whether to buy or sell) currently this value is not in use, by default the api throws the advice of long or short and the coin type along with the matching candle
+######################
+# indicate type of trades #
+######################
+type = 'eth' -> the first run must be specified in btc, then the second backtest tells you the other type of currency so you can perform the strategy corresponding to the second backtest
+#####################
+# override <yes> or <no> #
+#####################
+override = 'yes' -> to overwrite the stored MAdif, if the answer is <no> it will use the last MAdif stored in the MAdif.csv file
+
+#############
+remove.py ###
+#############
+is a file that allows you to delete the historical data of the files where
+the signals (MAdif.csv) and advices (advice.csv) are stored
+
+############
+##ESPAÑOL###
+############
 para levantar el server de gekko:
     node gekko --ui
 para correr la api de flask:
@@ -36,6 +83,8 @@ type = 'eth'  -> la primera corrida debe especificarse que es en btc, luego el s
 #########################
 override = 'yes'  -> para sobreescribir el MAdif almacenado, si la respuesta es <no> usará el último MAdif alamcenado en el archivo MAdif.csv
 
-la prueba fue realizada con datos de binance de fecha 2018-02-10 a 2018-02-11
-binance	USDT	BTC	2018-02-10 12:00	2018-02-11 11:58	23 hours, 58 minutes
-binance	USDT	ETH	2018-02-10 12:00	2018-02-11 11:58	23 hours, 58 minutes
+#############
+remove.py ###
+#############
+es un archivo que permite eliminar la data historica de los archivos donde
+se almacenan las señales(MAdif.csv) y advices(advice.csv) 
