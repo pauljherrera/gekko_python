@@ -125,6 +125,7 @@ def strategy():
                                                 'type': [settings['trades']]
                                                 }, index=[tprices])
                     datastrategy.to_csv('./static/advice.csv', mode='a+')
+                    body['advice'] = advice
                 else:
                     pass
             else:
@@ -136,6 +137,7 @@ def strategy():
                                                     'type': [settings['trades']]
                                                     }, index=[tprices])
                     datastrategy.to_csv('./static/advice.csv', mode='a+')
+                    body['advice'] = {'long':True, 'short':False}
 
             print("date coincident: ", tprices)
             print(advice)
@@ -148,8 +150,8 @@ def strategy():
 
     # Updating response body.
     # body['trend'] = ''
-    body['advice'] = advice
- 
+    # body['advice'] = advice
+    
     return jsonify(body)
 
 if __name__ == '__main__': 

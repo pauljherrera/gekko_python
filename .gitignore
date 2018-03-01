@@ -1,6 +1,7 @@
 docker/
 .vscode/
-static/*
+/static/MAdif.csv
+/static/advice.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
