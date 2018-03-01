@@ -106,7 +106,7 @@ def strategy():
     else:
         # the strategy with a currency other than btc
         strategy_scv = pd.read_csv('./static/MAdif.csv')
-        fstrategy = parser.parse(strategy_scv.iloc[0]['date'])  # date del MAdif
+        fstrategy = parser.parse(strategy_scv.iloc[0]['date'])  # MAdif date
         tprices = parser.parse(prices.iloc[-1]['datetime'])  # date of candle
         print(strategy_scv)
         # if there is a purchase or sale of another currency equal to the strategy
