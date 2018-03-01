@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from dateutil import parser
 import pandas as pd
+import math
 
 
 
@@ -78,27 +79,30 @@ def strategy():
         date = prices.iloc[-1]['datetime']
         time1 = parser.parse(date)  # date parsed
         # determines whether it is buying or selling
-        if float(MAdif) <= settings['entry_percentage']:
-            a = 'long'
-        elif float(MAdif) in range(settings['entry_percentage'], settings['exit_percentage']):
-            a = 'nothing'
+        entry_percentage = settings['entry_percentage']
+        exit_percentage = settings['exit_percentage']
+        if math.isnan(MAdif):
+            pass
         else:
-            a = 'long'
-        # for the strategy
-        # nstrategy = {'date': date, 'tend': a, 'MAdif': MAdif, 'date': time1}
-        # must be saved in a file advice.scv lenght, date, MAdif and a(advice)
-        strategy = pd.DataFrame({'date': [date],
-                                    'tend':[a],
-                                    'MAdif':[MAdif]
-                                    },columns=['date', 'tend', 'MAdif'],
-                                    index=[time1])
-        strategy.to_csv('./static/MAdif.csv')
-        # print('Malong: \n', MAlong)
-        print('last MAlong: ', MAlong[lenght])
-        # print('MAshort: \n', MAshort)
-        print('last MAshort: ', MAshort[lenght])
-        print('MAdif: ', MAdif)
-        print('saved in MAdif.csv: ', strategy)
+            if MAdif > entry_percentage and MAdif < exit_percentage:
+                a = 'nothing'
+            elif MAdif <= entry_percentage:
+                a = 'long'
+            elif MAdif >= exit_percentage:
+                a = 'short'
+        if a != 'nothing':
+            strategy = pd.DataFrame({'date': [date],
+                                        'tend':[a],
+                                        'MAdif':[MAdif]
+                                        },columns=['date', 'tend', 'MAdif'],
+                                        index=[time1])
+            strategy.to_csv('./static/MAdif.csv', mode='a+')
+            # print('Malong: \n', MAlong)
+            print('last MAlong: ', MAlong[lenght])
+            # print('MAshort: \n', MAshort)
+            print('last MAshort: ', MAshort[lenght])
+            print('MAdif: ', MAdif)
+            print('saved in MAdif.csv: ', strategy)
     else:
         # the strategy with a currency other than btc
         strategy_scv = pd.read_csv('./static/MAdif.csv')

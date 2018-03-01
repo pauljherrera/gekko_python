@@ -1,6 +1,6 @@
 # range of percentaje
-entry_percentage = 1
-exit_percentage = -1
+entry_percentage = -1
+exit_percentage = 1
 # num of periods[short_period|long_period]
 short_period = 5
 long_period = 10
