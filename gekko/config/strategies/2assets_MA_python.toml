@@ -1,10 +1,8 @@
 # range of percentaje
 entry_percentage = -1
 exit_percentage = 1
-# num of periods[short_period|long_period]
+# num of periods[short|long]_period
 short_period = 5
 long_period = 10
-# signals (yes/no) to get signal(short/long)
+# <yes/no> to get signal(short/long)
 signal = 'yes'
-# trades is the type of cryptocurrency(eth,btc,bcc, etc)
-trades = 'btc'

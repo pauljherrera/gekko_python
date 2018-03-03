@@ -56,6 +56,9 @@ method.check = function(candle) {
                  console.log('body:', body); // Print the body
 
                   // Trading advice.
+                  if(body === undefined){
+                    console.log(error)
+                  }else{
                     if (body.advice == 'long') {
                       this.advice('long');
                     } else if (body.advice == 'short') {
@@ -63,6 +66,7 @@ method.check = function(candle) {
                     } else {
                       this.advice();
                     }
+                  }
                }.bind(this)
   )
 };

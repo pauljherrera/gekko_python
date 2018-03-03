@@ -12,8 +12,14 @@ app = Flask(__name__)
 prices = pd.DataFrame(columns=['open', 'high', 'low', 'close',
                                'vwp', 'volume', 'trades', 'datetime'])
 
+strategy = pd.DataFrame(columns=['datetime', 'tend', 'MAdif'])
+
 bars = set()
 in_market = False
+
+def reset_strategy():
+    global strategy
+    strategy = pd.DataFrame(columns=['datetime', 'tend', 'MAdif'])
 
 
 def reset_settings():
@@ -35,7 +41,7 @@ def strategy():
     :param candle: candles of the assets to be processed
     :param advice: indicate buy(long) or sell(short)
     """
-    global prices, bars, in_market
+    global prices, bars, in_market, strategy
 
     # Getting request data.
     body = request.get_json()
@@ -93,13 +99,16 @@ def strategy():
             elif MAdif >= exit_percentage:
                 a = 'short'
         if a != 'nothing':
-            strategy = pd.DataFrame({'date': [time1],
+            # Reseting when it's a new backtest.
+            if counter == 1 and settings['signal'] == 'yes':
+                reset_strategy()
+            new_strategy = pd.DataFrame({'datetime': [time1],
                                         'tend':[a],
-                                        'MAdif':[MAdif],
-                                        'trade': [settings['trades']],
-                                        },columns=['date', 'tend', 'MAdif', 'trade'],
+                                        'MAdif':[MAdif]
+                                        },columns=['date', 'tend', 'MAdif'],
                                         index=[date])
-            strategy.to_csv('./static/MAdif.csv', mode='a+')
+            strategy = strategy.append(new_strategy)
+            strategy.to_csv('./static/MAdif.csv', mode='w+')
             # print('Malong: \n', MAlong)
             print('last MAlong: ', MAlong[lenght])
             # print('MAshort: \n', MAshort)
@@ -122,7 +131,6 @@ def strategy():
                 if datastrategy.iloc[-1]['tend'] != advice:
                     datastrategy = pd.DataFrame({
                                                 'tend': [advice],
-                                                'type': [settings['trades']]
                                                 }, index=[tprices])
                     datastrategy.to_csv('./static/advice.csv', mode='a+')
                     advice = advice
@@ -134,7 +142,6 @@ def strategy():
                 else:
                     datastrategy = pd.DataFrame({
                                                     'tend': [advice],
-                                                    'type': [settings['trades']]
                                                     }, index=[tprices])
                     datastrategy.to_csv('./static/advice.csv', mode='a+')
                     advice = advice
