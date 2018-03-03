@@ -1,6 +1,7 @@
 docker/
 .vscode/
-python_gekko/static/
+python_gekko/static/MAdif.csv
+python_gekko/static/advice.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

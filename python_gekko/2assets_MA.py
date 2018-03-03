@@ -11,22 +11,21 @@ app = Flask(__name__)
 # Global variables.
 prices = pd.DataFrame(columns=['open', 'high', 'low', 'close',
                                'vwp', 'volume', 'trades', 'datetime'])
-
-strategy = pd.DataFrame(columns=['datetime', 'tend', 'MAdif'])
+new = pd.DataFrame(columns=['date', 'tend', 'MAdif'])
+new_datastrategy = pd.DataFrame(columns=['tend'])
 
 bars = set()
 in_market = False
 
-def reset_strategy():
-    global strategy
-    strategy = pd.DataFrame(columns=['datetime', 'tend', 'MAdif'])
-
 
 def reset_settings():
-    global prices, bars, in_market
+    global prices, bars, in_market, new, new_datastrategy
 
     prices = pd.DataFrame(columns=['open', 'high', 'low', 'close',
                                    'vwp', 'volume', 'trades', 'datetime'])
+    new = pd.DataFrame(columns=['date', 'tend', 'MAdif'])
+    new_datastrategy = pd.DataFrame(columns=['tend'])
+
     bars = set()
     in_market = False
 
@@ -41,7 +40,7 @@ def strategy():
     :param candle: candles of the assets to be processed
     :param advice: indicate buy(long) or sell(short)
     """
-    global prices, bars, in_market, strategy
+    global prices, bars, in_market, new, new_datastrategy
 
     # Getting request data.
     body = request.get_json()
@@ -70,7 +69,7 @@ def strategy():
                               }, 
                              index = [time])
     prices = prices.append(new_price)
-
+    # print(prices)
     # Strategy logic.
     if settings['signal'] == 'yes':
         # calculate for the MAdif
@@ -99,27 +98,27 @@ def strategy():
             elif MAdif >= exit_percentage:
                 a = 'short'
         if a != 'nothing':
-            # Reseting when it's a new backtest.
-            if counter == 1 and settings['signal'] == 'yes':
-                reset_strategy()
-            new_strategy = pd.DataFrame({'datetime': [time1],
+            strategy = pd.DataFrame({'date': [date],
                                         'tend':[a],
                                         'MAdif':[MAdif]
                                         },columns=['date', 'tend', 'MAdif'],
-                                        index=[date])
-            strategy = strategy.append(new_strategy)
-            strategy.to_csv('./static/MAdif.csv', mode='w+')
+                                        index=[time1])
+            new = new.append(strategy)
+            print(new)
+            new.to_csv('./static/MAdif.csv', mode='w+')
             # print('Malong: \n', MAlong)
             print('last MAlong: ', MAlong[lenght])
             # print('MAshort: \n', MAshort)
             print('last MAshort: ', MAshort[lenght])
             print('MAdif: ', MAdif)
             print('saved in MAdif.csv: ', strategy)
+        else:
+            pass
     else:
         # the strategy with a currency other than btc
         strategy_scv = pd.read_csv('./static/MAdif.csv')
         fstrategy = set(strategy_scv.loc[:,'date'])  # MAdif date
-        tprices = str(parser.parse(prices.iloc[-1]['datetime']))  # date of candle
+        tprices = str(prices.iloc[-1]['datetime'])  # date of candle
         # if there is a purchase or sale of another currency equal to the strategy
         if tprices in fstrategy:
             # the advice that return with candle for the gekko console
@@ -132,7 +131,8 @@ def strategy():
                     datastrategy = pd.DataFrame({
                                                 'tend': [advice],
                                                 }, index=[tprices])
-                    datastrategy.to_csv('./static/advice.csv', mode='a+')
+                    new_datastrategy = new_datastrategy.append(datastrategy)
+                    new_datastrategy.to_csv('./static/advice.csv', mode='w+')
                     advice = advice
                 else:
                     pass
@@ -143,7 +143,8 @@ def strategy():
                     datastrategy = pd.DataFrame({
                                                     'tend': [advice],
                                                     }, index=[tprices])
-                    datastrategy.to_csv('./static/advice.csv', mode='a+')
+                    new_datastrategy = new_datastrategy.append(datastrategy)
+                    new_datastrategy.to_csv('./static/advice.csv', mode='w+')
                     advice = advice
 
             print("date coincident: ", tprices)
