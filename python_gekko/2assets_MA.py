@@ -25,6 +25,8 @@ def reset_settings():
                                    'vwp', 'volume', 'trades', 'datetime'])
     new = pd.DataFrame(columns=['date', 'tend', 'MAdif'])
     new_datastrategy = pd.DataFrame(columns=['tend'])
+    if os.path.exists('./static/advice.csv'):
+        os.remove('./static/advice.csv')
 
     bars = set()
     in_market = False
@@ -116,16 +118,16 @@ def strategy():
             pass
     else:
         # the strategy with a currency other than btc
-        strategy_scv = pd.read_csv('./static/MAdif.csv')
-        fstrategy = set(strategy_scv.loc[:,'date'])  # MAdif date
+        strategy_csv = pd.read_csv('./static/MAdif.csv')
+        fstrategy = set(strategy_csv.loc[:,'date'])  # MAdif date
         tprices = str(prices.iloc[-1]['datetime'])  # date of candle
         # if there is a purchase or sale of another currency equal to the strategy
         if tprices in fstrategy:
             # the advice that return with candle for the gekko console
-            col = strategy_scv[strategy_scv['date'] == tprices]
+            col = strategy_csv[strategy_csv['date'] == tprices]
             advice = col.iloc[0]['tend']  # short/long
             # datastrategy: hour, tend, type
-            if os.path.exists('static/advice.csv') and os.stat('./static/advice.csv').st_size > 0:
+            if os.path.exists('./static/advice.csv') and os.stat('./static/advice.csv').st_size > 0:
                 datastrategy = pd.read_csv('./static/advice.csv')
                 if datastrategy.iloc[-1]['tend'] != advice:
                     datastrategy = pd.DataFrame({
@@ -135,10 +137,10 @@ def strategy():
                     new_datastrategy.to_csv('./static/advice.csv', mode='w+')
                     advice = advice
                 else:
-                    pass
+                    advice = {'long':False, 'short':False}
             else:
                 if advice == 'short':
-                    pass
+                    advice = {'long':False, 'short':False}
                 else:
                     datastrategy = pd.DataFrame({
                                                     'tend': [advice],
@@ -150,7 +152,7 @@ def strategy():
             print("date coincident: ", tprices)
             print(advice)
         else:
-            pass
+            advice = {'long':False, 'short':False}
 
 
     # Bullish signal.
