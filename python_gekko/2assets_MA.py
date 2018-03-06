@@ -124,8 +124,8 @@ def strategy():
         # if there is a purchase or sale of another currency equal to the strategy
         if tprices in fstrategy:
             # the advice that return with candle for the gekko console
-            col = strategy_csv[strategy_csv['date'] == tprices]
-            advice = col.iloc[0]['tend']  # short/long
+            row = strategy_csv[strategy_csv['date'] == tprices]
+            advice = row.iloc[0]['tend']  # short/long
             # datastrategy: hour, tend, type
             if os.path.exists('./static/advice.csv') and os.stat('./static/advice.csv').st_size > 0:
                 datastrategy = pd.read_csv('./static/advice.csv')
