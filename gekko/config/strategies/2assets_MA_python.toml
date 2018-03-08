@@ -1,8 +1,12 @@
-# range of percentaje
+# Percentage between the MAs for entering and exiting the market
 entry_percentage = -1
 exit_percentage = 1
-# num of periods[short|long]_period
+
+# Moving Average parameters.
 short_period = 5
 long_period = 10
-# <yes/no> to get signal(short/long)
-signal = 'yes'
+
+# Signal generation or trading.
+# 'yes' will generate the signals.
+# 'no' will generate the trades.
+signal = 'yes'  
